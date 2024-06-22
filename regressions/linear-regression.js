@@ -5,6 +5,7 @@ class LinearRegression {
     constructor(features, labels, options) {
         this.features = this.processFeatures(features);
         this.labels = tf.tensor(labels);
+        this.mseHistory = [];
        
         this.options = Object.assign(
             { learningRate: 0.1, iterations: 1000 }, 
@@ -80,6 +81,18 @@ class LinearRegression {
             .sub(mean)
             .div(variance.pow(.5));
     }
+
+    recordMSE() {
+        const mse = this.features
+            .matMul(this.weights)
+            .sub(this.labels)
+            .pow(2)
+            .sum()
+            .div(this.features.shape[0])
+            .get();
+        this.mseHistory.push(mse);
+    }
+    
 }
 
 module.exports = LinearRegression;
