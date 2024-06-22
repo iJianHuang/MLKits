@@ -42,11 +42,25 @@ class LinearRegression {
         testFeatures = tf.tensor(testFeatures);
         testLabels = tf.tensor(testLabels);
 
-        testFeatures = tf.ones([testFeatures.shape[0], 1])
+        testFeatures = tf
+            .ones([testFeatures.shape[0], 1])
             .concat(testFeatures, 1);
 
         const predictions = testFeatures.matMul(this.weights);
-        predictions.print();
+        
+        const ssRes = testLabels
+            .sub(predictions)
+            .pow(2)
+            .sum()
+            .get();
+
+        const ssTot = testLabels
+            .sub(testLabels.mean())
+            .pow(2)
+            .sum()
+            .get();   
+
+        return 1 - ssRes / ssTot;    
     }
 }
 
