@@ -15,14 +15,14 @@ class LinearRegression {
         this.weights = tf.zeros([this.features.shape[1], 1]);
     }
 
-    gradientDescent() {
+    gradientDescent(features, labels) {
         // transposed-features * ((features-w-ones * weights) - labels)
-        const currentGuesses = this.features.matMul(this.weights);
-        const differences = currentGuesses.sub(this.labels);
-        const slopes = this.features
+        const currentGuesses = features.matMul(this.weights);
+        const differences = currentGuesses.sub(labels);
+        const slopes = features
             .transpose()
             .matMul(differences)
-            .div(this.features.shape[0]);
+            .div(features.shape[0]);
 
         this.weights = this.weights
             .sub(slopes.mul(this.options.learningRate));
@@ -30,8 +30,24 @@ class LinearRegression {
     }    
     
     train() {
-        for (let i = 0; i < this.options.iterations; i++ ){
-            this.gradientDescent();
+        const batchQuantity = Math.floor(this.features.shape[0] / this.options.batchSize);
+        for (let i = 0; i < this.options.iterations; i++ ) {
+            for (let j = 0; j < batchQuantity; j++) {
+                const { batchSize } = this.options;
+                const startIndex = j * batchSize;
+                const featureSlice = this.features.slice(
+                    [startIndex, 0], 
+                    [batchSize, -1]
+                );
+                const labelSlice = this.labels.slice(
+                    [startIndex, 0],
+                    [batchSize, -1]
+                );
+                this.gradientDescent(featureSlice, labelSlice);
+            }
+
+            console.log('LR: ', this.options.learningRate);           
+            
             this.recordMSE();
             this.updateLearningRate();
         }
