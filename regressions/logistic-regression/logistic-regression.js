@@ -83,7 +83,6 @@ class LogisticRegression {
     }
 
     processFeatures(features) {
-        console.log('features array in processFeatures: ', features);
         features = tf.tensor(features);
                 
         if (this.mean && this.variance) {
@@ -101,16 +100,12 @@ class LogisticRegression {
     }
 
     standardize(features) {
-        console.log('features before standarized: ', features.print());
         const { mean, variance } = tf.moments(features, 0);
         this.mean = mean;
         this.variance = variance;
-        console.log('mean: ', mean.print(), ', variance: ', variance.print());
-        const standarizedFeatures = features
+        return features
             .sub(mean)
             .div(variance.pow(.5));
-        console.log('Standarized features: ', standarizedFeatures.print());
-        return standarizedFeatures;
     }
 
     recordMSE() {

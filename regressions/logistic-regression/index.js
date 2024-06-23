@@ -17,9 +17,9 @@ const {features, labels, testFeatures, testLabels} =
     });
 
 const regression = new LogisticRegression(features, labels, {
-    learningRate: 0.1,
-    iterations: 1,
-    batchSize: 100
+    learningRate: 0.5,
+    iterations: 100,
+    batchSize: 50
 });
 
 //console.log(labels);
@@ -27,6 +27,7 @@ const regression = new LogisticRegression(features, labels, {
 regression.train();
 
 const observations = [
-    [130, 307, 1.75]
+    [130, 307, 1.75],
+    [88, 97, 1.065]
 ];
 regression.predict(observations).print();
