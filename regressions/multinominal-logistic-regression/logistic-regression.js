@@ -19,7 +19,7 @@ class LogisticRegression {
         // transposed-features * ((features-w-ones * weights) - labels)
         const currentGuesses = features
             .matMul(this.weights)
-            .sigmoid();
+            .softmax();
         const differences = currentGuesses.sub(labels);
         const slopes = features
             .transpose()
@@ -58,17 +58,17 @@ class LogisticRegression {
     predict(observations) {
         return this.processFeatures(observations)
             .matMul(this.weights)
-            .sigmoid()
-            .greater(this.options.decisionBoundary)
-            .cast('float32');
+            .softmax()
+            .argMax(1);
     };
 
     test(testFeatures, testLabels) {
         const predictions = this.predict(testFeatures);
-        testLabels = tf.tensor(testLabels);
+        tf.tensor(testLabels).print();
+        testLabels = tf.tensor(testLabels).argMax(1);
+        
         const incorrect = predictions
-            .sub(testLabels)
-            .abs()
+            .notEqual(testLabels)
             .sum()
             .get();
         return (predictions.shape[0] - incorrect) / predictions.shape[0];
@@ -102,7 +102,7 @@ class LogisticRegression {
 
     recordCost() {
         // -1 / n * ( (Actual.T * log(guesses)) + ((1 - Actual).T * log(1 - guesses)) )
-        const guesses = this.features.matMul(this.weights).sigmoid();
+        const guesses = this.features.matMul(this.weights).softmax();
         const termOne = this.labels
             .transpose()
             .matMul(guesses.log());

@@ -36,17 +36,18 @@ const regression = new LogisticRegression(features, _.flatMap(labels), {
 
 
 regression.train();
+/*
 const vehLowMpg = [215, 440, 2.16];
-const veh2 = [150, 200, 2.223];
-let vehObservation = veh2;
+const veh2 = [200, 354, 1.95]; // [97, 88, 1.07];
+let vehObservation =  veh2;
 regression.predict([
     vehObservation
 ]).print();
+*/
+
+console.log(regression.test(testFeatures, _.flatMap(testLabels)));
 
 /*
-regression.train();
-
-console.log(regression.test(testFeatures, testLabels));
 
 plot( {
     x: regression.costHistory.reverse()
