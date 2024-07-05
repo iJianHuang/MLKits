@@ -9,7 +9,7 @@ const mnist = require('mnist-data');
 // --max-old-space-size=4096
 
 function loadData() {
-    const mnistData = mnist.training(0, 10000);
+    const mnistData = mnist.training(0, 60000);
 
     const features = mnistData.images.values.map(image => _.flatMap(image));
     const encodedLabels = mnistData.labels.values.map(label => {
