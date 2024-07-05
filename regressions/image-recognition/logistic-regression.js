@@ -45,6 +45,7 @@ class LogisticRegression {
                     [startIndex, 0],
                     [batchSize, -1]
                 );
+                //debugger
                 this.gradientDescent(featureSlice, labelSlice);
             }
 
