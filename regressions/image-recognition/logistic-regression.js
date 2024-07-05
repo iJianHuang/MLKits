@@ -66,7 +66,7 @@ class LogisticRegression {
 
     test(testFeatures, testLabels) {
         const predictions = this.predict(testFeatures);
-        tf.tensor(testLabels).print();
+        //tf.tensor(testLabels).print();
         testLabels = tf.tensor(testLabels).argMax(1);
         
         const incorrect = predictions
@@ -107,10 +107,14 @@ class LogisticRegression {
     recordCost() {
         // -1 / n * ( (Actual.T * log(guesses)) + ((1 - Actual).T * log(1 - guesses)) )
         const cost = tf.tidy(() => {
+            //debugger
             const guesses = this.features.matMul(this.weights).softmax();
             const termOne = this.labels
                 .transpose()
-                .matMul(guesses.log());
+                .matMul(
+                    guesses.add(1e-7) // Add a constant to avoid log(0), 1 x 10 ^ -7 = .0000001
+                        .log()  
+                );
             const termTwo = this.labels
                 .mul(-1)
                 .add(1)
@@ -119,6 +123,7 @@ class LogisticRegression {
                     guesses
                         .mul(-1)
                         .add(1)
+                        .add(1e-7) // 1 x 10 ^ -7 = .0000001
                         .log()
                 );
 
